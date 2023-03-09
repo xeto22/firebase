@@ -66,6 +66,8 @@ if (argv.persistence) {
   args.push('--require', 'test/util/node_persistence.ts');
 }
 
+args.push('--require', 'test/util/platform/platform_node_register.ts');
+
 args = args.concat(argv._ as string[]);
 
 const childProcess = spawn(nyc, args, {

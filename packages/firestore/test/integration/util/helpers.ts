@@ -132,13 +132,23 @@ export function toIds(docSet: QuerySnapshot): string[] {
   return docSet.docs.map(d => d.id);
 }
 
-export function withTestDb(
+export async function withTestDb<T>(
   persistence: boolean,
-  fn: (db: Firestore) => Promise<void>
-): Promise<void> {
-  return withTestDbs(persistence, 1, ([db]) => {
-    return fn(db);
-  });
+  fn: (db: Firestore) => Promise<T>
+): Promise<T> {
+  const { db, tearDown } = await createTestDb(persistence);
+  try {
+    return await fn(db);
+  } finally {
+    await tearDown();
+  }
+}
+
+export async function createTestDb(
+  persistence: boolean
+): Promise<{ db: Firestore; tearDown: () => Promise<void> }> {
+  const { dbs, tearDown } = await createTestDbs(persistence, 1);
+  return { db: dbs[0], tearDown };
 }
 
 /** Runs provided fn with a db for an alternate project id. */
@@ -157,26 +167,57 @@ export function withAlternateTestDb(
   );
 }
 
-export function withTestDbs(
+export async function withTestDbs<T>(
   persistence: boolean,
   numDbs: number,
-  fn: (db: Firestore[]) => Promise<void>
-): Promise<void> {
-  return withTestDbsSettings(
+  fn: (db: Firestore[]) => Promise<T>
+): Promise<T> {
+  const { dbs, tearDown } = await createTestDbs(persistence, numDbs);
+  try {
+    return await fn(dbs);
+  } finally {
+    await tearDown();
+  }
+}
+
+export async function createTestDbs(
+  persistence: boolean,
+  numDbs: number
+): Promise<{ dbs: Firestore[]; tearDown: () => Promise<void> }> {
+  return createTestDbsSettings(
     persistence,
     DEFAULT_PROJECT_ID,
     DEFAULT_SETTINGS,
-    numDbs,
-    fn
+    numDbs
   );
 }
-export async function withTestDbsSettings(
+
+export async function withTestDbsSettings<T>(
   persistence: boolean,
   projectId: string,
   settings: PrivateSettings,
   numDbs: number,
-  fn: (db: Firestore[]) => Promise<void>
-): Promise<void> {
+  fn: (db: Firestore[]) => Promise<T>
+): Promise<T> {
+  const { dbs, tearDown } = await createTestDbsSettings(
+    persistence,
+    projectId,
+    settings,
+    numDbs
+  );
+  try {
+    return await fn(dbs);
+  } finally {
+    await tearDown();
+  }
+}
+
+export async function createTestDbsSettings(
+  persistence: boolean,
+  projectId: string,
+  settings: PrivateSettings,
+  numDbs: number
+): Promise<{ dbs: Firestore[]; tearDown: () => Promise<void> }> {
   if (numDbs === 0) {
     throw new Error("Can't test with no databases");
   }
@@ -191,16 +232,16 @@ export async function withTestDbsSettings(
     dbs.push(db);
   }
 
-  try {
-    await fn(dbs);
-  } finally {
+  const tearDown = async (): Promise<void> => {
     for (const db of dbs) {
       await terminate(db);
       if (persistence) {
         await clearIndexedDbPersistence(db);
       }
     }
-  }
+  };
+
+  return { dbs, tearDown };
 }
 
 export async function withNamedTestDbsOrSkipUnlessUsingEmulator(
