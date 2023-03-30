@@ -60,6 +60,8 @@ export interface PrivateSettings extends FirestoreSettings {
   // Used in firestore@exp
   experimentalAutoDetectLongPolling?: boolean;
   // Used in firestore@exp
+  experimentalLongPollingTimeout?: number;
+  // Used in firestore@exp
   useFetchStreams?: boolean;
 
   localCache?: FirestoreLocalCache;
@@ -82,6 +84,8 @@ export class FirestoreSettingsImpl {
   readonly experimentalForceLongPolling: boolean;
 
   readonly experimentalAutoDetectLongPolling: boolean;
+
+  readonly experimentalLongPollingTimeout: number | null;
 
   readonly ignoreUndefinedProperties: boolean;
 
@@ -130,6 +134,7 @@ export class FirestoreSettingsImpl {
     this.experimentalForceLongPolling = !!settings.experimentalForceLongPolling;
     this.experimentalAutoDetectLongPolling =
       !!settings.experimentalAutoDetectLongPolling;
+    this.experimentalLongPollingTimeout = settings?.experimentalLongPollingTimeout ?? null;
     this.useFetchStreams = !!settings.useFetchStreams;
 
     validateIsNotUsedTogether(
@@ -150,6 +155,8 @@ export class FirestoreSettingsImpl {
         other.experimentalForceLongPolling &&
       this.experimentalAutoDetectLongPolling ===
         other.experimentalAutoDetectLongPolling &&
+      this.experimentalLongPollingTimeout ===
+        other.experimentalLongPollingTimeout &&
       this.ignoreUndefinedProperties === other.ignoreUndefinedProperties &&
       this.useFetchStreams === other.useFetchStreams
     );

@@ -36,6 +36,9 @@ export class DatabaseInfo {
    * option when using WebChannel as the network transport.
    * @param useFetchStreams Whether to use the Fetch API instead of
    * XMLHTTPRequest
+   * @param longPollingTimeout The desired maximum timeout interval (in
+   * milliseconds) to complete a long-polling GET response; the server _may_
+   * ignore this value; may be null to use the default (30 seconds).
    */
   constructor(
     readonly databaseId: DatabaseId,
@@ -45,7 +48,8 @@ export class DatabaseInfo {
     readonly ssl: boolean,
     readonly forceLongPolling: boolean,
     readonly autoDetectLongPolling: boolean,
-    readonly useFetchStreams: boolean
+    readonly useFetchStreams: boolean,
+    readonly longPollingTimeout: number | null
   ) {}
 }
 

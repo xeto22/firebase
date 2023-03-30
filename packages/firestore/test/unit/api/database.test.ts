@@ -279,6 +279,37 @@ describe('Settings', () => {
     );
   });
 
+  it('can not use longPollingTimeout of 0', () => {
+    // Use a new instance of Firestore in order to configure settings.
+    const db = newTestFirestore();
+    expect(() =>
+      db._setSettings({
+        longPollingTimeout: 0,
+      })
+    ).to.throw(
+      `invalid longPollingTimeout: 0`
+    );
+  });
+
+  it('can not use longPollingTimeout of -1', () => {
+    // Use a new instance of Firestore in order to configure settings.
+    const db = newTestFirestore();
+    expect(() =>
+      db._setSettings({
+        longPollingTimeout: -1,
+      })
+    ).to.throw(
+      `invalid longPollingTimeout: -1`
+    );
+  });
+
+  it('longPollingTimeout is allowed even without long-polling', () => {
+    // Use a new instance of Firestore in order to configure settings.
+    const db = newTestFirestore();
+    const settings = db._setSettings({longPollingTimeout: 12345});
+    expect(settings.longPollingTimeout).to.equal(12345);
+  });
+
   it('gets settings from useEmulator', () => {
     // Use a new instance of Firestore in order to configure settings.
     const db = newTestFirestore();
