@@ -23,7 +23,6 @@ import typescriptPlugin from 'rollup-plugin-typescript2';
 import typescript from 'typescript';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import replace from 'rollup-plugin-replace';
-import { terser } from 'rollup-plugin-terser';
 
 import pkg from './lite/package.json';
 import { generateBuildTargetReplaceConfig } from '../../scripts/build/rollup_replace_build_target';
@@ -60,8 +59,7 @@ const browserPlugins = function () {
       abortOnError: true,
       transformers: [util.removeAssertAndPrefixInternalTransformer]
     }),
-    json({ preferConst: true }),
-    terser(util.manglePrivatePropertiesOptions)
+    json({ preferConst: true })
   ];
 };
 

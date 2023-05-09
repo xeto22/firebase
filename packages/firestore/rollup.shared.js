@@ -20,13 +20,10 @@ const json = require('@rollup/plugin-json');
 const alias = require('@rollup/plugin-alias');
 const typescriptPlugin = require('rollup-plugin-typescript2');
 const typescript = require('typescript');
-const { terser } = require('rollup-plugin-terser');
 const path = require('path');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 
-const { renameInternals } = require('./scripts/rename-internals');
 const { extractPublicIdentifiers } = require('./scripts/extract-api');
-const { removeAsserts } = require('./scripts/remove-asserts');
 
 const { externs } = require('./externs.json');
 const pkg = require('./package.json');
@@ -114,7 +111,7 @@ publicIdentifiers.add('_delegate');
  * `hardAssert`.
  */
 const removeAssertTransformer = service => ({
-  before: [removeAsserts(service.getProgram())],
+  before: [],
   after: []
 });
 exports.removeAssertTransformer = removeAssertTransformer;
@@ -124,13 +121,7 @@ exports.removeAssertTransformer = removeAssertTransformer;
  * `hardAssert` and appends a __PRIVATE_ prefix to all internal symbols.
  */
 const removeAssertAndPrefixInternalTransformer = service => ({
-  before: [
-    removeAsserts(service.getProgram()),
-    renameInternals(service.getProgram(), {
-      publicIdentifiers,
-      prefix: '__PRIVATE_'
-    })
-  ],
+  before: [],
   after: []
 });
 exports.removeAssertAndPrefixInternalTransformer =
@@ -254,8 +245,7 @@ exports.es2017Plugins = function (platform, mangled = false) {
         cacheDir: tmp.dirSync(),
         transformers: [removeAssertAndPrefixInternalTransformer]
       }),
-      json({ preferConst: true }),
-      terser(manglePrivatePropertiesOptions)
+      json({ preferConst: true })
     ];
   } else {
     return [
@@ -287,18 +277,6 @@ exports.es2017ToEs5Plugins = function (mangled = false) {
         },
         include: ['dist/**/*.js'],
         cacheDir: tmp.dirSync()
-      }),
-      terser({
-        output: {
-          comments: 'all',
-          beautify: true
-        },
-        // See comment above `manglePrivatePropertiesOptions`. This build did
-        // not have the identical variable name issue but we should be
-        // consistent.
-        mangle: {
-          reserved: ['_getProvider']
-        }
       }),
       sourcemaps()
     ];
@@ -341,8 +319,7 @@ exports.es2017PluginsCompat = function (
           pathTransformer
         ]
       }),
-      json({ preferConst: true }),
-      terser(manglePrivatePropertiesOptions)
+      json({ preferConst: true })
     ];
   } else {
     return [
