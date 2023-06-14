@@ -14,11 +14,17 @@ jobs:
     name: Build the SDK
     runs-on: ubuntu-latest
     steps:
-    # install Chrome first, so the correct version of webdriver can be installed by chromedriver when setting up the repo
+    # Install Chrome so the correct version of webdriver can be installed by chromedriver when
+    # setting up the repo
     - name: install Chrome stable
+      # For Auth: install Chrome v110.0.5481.177-1 as some Auth tests start to fail on version 111.
+      # This seems to be a build requirement as well as a test requirement.
+      # Temporary: Auth team will explore what's going wrong with the auth tests.
       run: |
         sudo apt-get update
-        sudo apt-get install google-chrome-stable
+        sudo apt-get install wget
+        sudo wget http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_110.0.5481.177-1_amd64.deb
+        sudo apt-get install -f ./google-chrome-stable_110.0.5481.177-1_amd64.deb --allow-downgrades
     - uses: actions/checkout@v3
     - name: Set up Node (16)
       uses: actions/setup-node@v3
