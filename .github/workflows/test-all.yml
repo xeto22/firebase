@@ -14,17 +14,11 @@ jobs:
     name: Build the SDK
     runs-on: ubuntu-latest
     steps:
-    # Install Chrome so the correct version of webdriver can be installed by chromedriver when
-    # setting up the repo. This must be done to build and execute Auth properly.
+    # install Chrome first, so the correct version of webdriver can be installed by chromedriver when setting up the repo
     - name: install Chrome stable
-      # Install Chrome version 110.0.5481.177-1 as some Auth tests start to fail on version 111.
-      # Temporary: Auth team will explore what's going wrong with the auth tests.
       run: |
         sudo apt-get update
-        sudo apt-get install wget
-        sudo wget http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_110.0.5481.177-1_amd64.deb
-        sudo apt-get install -f ./google-chrome-stable_110.0.5481.177-1_amd64.deb --allow-downgrades
-    - uses: actions/checkout@v3
+        sudo apt-get install google-chrome-stable- uses: actions/checkout@v3
     - name: Set up Node (16)
       uses: actions/setup-node@v3
       with:
@@ -129,7 +123,7 @@ jobs:
       run: echo "FIREBASE_CI_TEST_START_TIME=$(date +%s)" >> $GITHUB_ENV
     - name: Run unit tests
       run: |
-        xvfb-run lerna run --concurrency 4 test:ci --scope '@firebase/auth*'
+        xvfb-run lerna run --concurrency 1 test:ci --scope '@firebase/auth*'
         node scripts/print_test_logs.js
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_CLI_TOKEN }}
