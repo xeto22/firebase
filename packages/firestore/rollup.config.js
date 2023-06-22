@@ -19,6 +19,7 @@ import { version as grpcVersion } from '@grpc/grpc-js/package.json';
 import alias from '@rollup/plugin-alias';
 import json from '@rollup/plugin-json';
 import replace from 'rollup-plugin-replace';
+import dts from 'rollup-plugin-dts';
 import typescriptPlugin from 'rollup-plugin-typescript2';
 import tmp from 'tmp';
 import typescript from 'typescript';
@@ -27,6 +28,7 @@ import { generateBuildTargetReplaceConfig } from '../../scripts/build/rollup_rep
 
 import pkg from './package.json';
 
+const sourcemaps = require('rollup-plugin-sourcemaps');
 const util = require('./rollup.shared');
 
 const nodePlugins = function () {
@@ -109,7 +111,10 @@ const allBuilds = [
       format: 'es',
       sourcemap: true
     },
-    plugins: [replace(generateBuildTargetReplaceConfig('esm', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('esm', 2017))
+    ],
     external: util.resolveNodeExterns,
     treeshake: {
       moduleSideEffects: false
@@ -160,7 +165,10 @@ const allBuilds = [
         sourcemap: true
       }
     ],
-    plugins: [replace(generateBuildTargetReplaceConfig('cjs', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('cjs', 2017))
+    ],
     external: util.resolveBrowserExterns,
     treeshake: {
       moduleSideEffects: false
@@ -176,7 +184,10 @@ const allBuilds = [
         sourcemap: true
       }
     ],
-    plugins: [replace(generateBuildTargetReplaceConfig('esm', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('esm', 2017))
+    ],
     external: util.resolveBrowserExterns,
     treeshake: {
       moduleSideEffects: false
@@ -199,6 +210,18 @@ const allBuilds = [
     treeshake: {
       moduleSideEffects: false
     }
+  },
+  {
+    input: 'dist/firestore/src/index.d.ts',
+    output: {
+      file: 'dist/firestore/src/global_index.d.ts',
+      format: 'es'
+    },
+    plugins: [
+      dts({
+        respectExternal: true
+      })
+    ]
   }
 ];
 

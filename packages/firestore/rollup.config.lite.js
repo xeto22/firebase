@@ -121,7 +121,10 @@ const allBuilds = [
       format: 'es',
       sourcemap: true
     },
-    plugins: [replace(generateBuildTargetReplaceConfig('esm', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('esm', 2017))
+    ],
     external: util.resolveNodeExterns,
     treeshake: {
       moduleSideEffects: false
@@ -179,7 +182,10 @@ const allBuilds = [
         sourcemap: true
       }
     ],
-    plugins: [replace(generateBuildTargetReplaceConfig('cjs', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('cjs', 2017))
+    ],
     external: util.resolveBrowserExterns,
     treeshake: {
       moduleSideEffects: false
@@ -195,7 +201,10 @@ const allBuilds = [
         sourcemap: true
       }
     ],
-    plugins: [replace(generateBuildTargetReplaceConfig('esm', 2017))],
+    plugins: [
+      sourcemaps(),
+      replace(generateBuildTargetReplaceConfig('esm', 2017))
+    ],
     external: util.resolveBrowserExterns,
     treeshake: {
       moduleSideEffects: false

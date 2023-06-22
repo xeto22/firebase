@@ -1,5 +1,49 @@
 # firebase
 
+## 9.22.2
+
+### Patch Changes
+
+- [`4a86f4eb0`](https://github.com/firebase/firebase-js-sdk/commit/4a86f4eb0c606443ac01d99a9169e4074d5d21dc) [#7294](https://github.com/firebase/firebase-js-sdk/pull/7294) (fixes [#7279](https://github.com/firebase/firebase-js-sdk/issues/7279)) - Fixed the types path for `compat/app`.
+
+- Updated dependencies [[`fe7da7ec3`](https://github.com/firebase/firebase-js-sdk/commit/fe7da7ec3c83c200d7a0c7b90bb6bd27654309ee)]:
+  - @firebase/app@0.9.12
+  - @firebase/firestore@3.12.2
+  - @firebase/app-compat@0.2.12
+  - @firebase/firestore-compat@0.3.11
+
+## 9.22.1
+
+### Patch Changes
+
+- Updated dependencies [[`e12e7f535`](https://github.com/firebase/firebase-js-sdk/commit/e12e7f53516b77f73e3781ffb64385d52982f653)]:
+  - @firebase/app@0.9.11
+  - @firebase/app-check@0.8.0
+  - @firebase/functions@0.10.0
+  - @firebase/app-compat@0.2.11
+  - @firebase/firestore@3.12.1
+  - @firebase/app-check-compat@0.3.7
+  - @firebase/functions-compat@0.3.5
+  - @firebase/firestore-compat@0.3.10
+
+## 9.22.0
+
+### Minor Changes
+
+- [`e45fea9b8`](https://github.com/firebase/firebase-js-sdk/commit/e45fea9b8ce2c284c5e147fd3ac2174087fbba09) [#7236](https://github.com/firebase/firebase-js-sdk/pull/7236) - Enabled long-polling networking mode auto detection by default. It can be explicitly disabled by setting `FirestoreSettings.experimentalForceLongPolling` to `false`.
+
+- [`8051e4a99`](https://github.com/firebase/firebase-js-sdk/commit/8051e4a99e199e5cc8e6ff51a1a1116e4a56337b) [#7176](https://github.com/firebase/firebase-js-sdk/pull/7176) - Added the ability to configure the long-polling hanging get request timeout using the new `experimentalLongPollingOptions.timeoutSeconds` setting
+
+### Patch Changes
+
+- Updated dependencies [[`466d3670a`](https://github.com/firebase/firebase-js-sdk/commit/466d3670ae32b61e3e0319bb73407bcd7ac90290), [`e45fea9b8`](https://github.com/firebase/firebase-js-sdk/commit/e45fea9b8ce2c284c5e147fd3ac2174087fbba09), [`e0551fa13`](https://github.com/firebase/firebase-js-sdk/commit/e0551fa13c9ae1556edf0ffb967f2f9e661f18a0), [`afdccd57a`](https://github.com/firebase/firebase-js-sdk/commit/afdccd57a93cedc3cff052dfb19c2863660ba592), [`8051e4a99`](https://github.com/firebase/firebase-js-sdk/commit/8051e4a99e199e5cc8e6ff51a1a1116e4a56337b)]:
+  - @firebase/app@0.9.10
+  - @firebase/firestore@3.12.0
+  - @firebase/auth@0.23.2
+  - @firebase/app-compat@0.2.10
+  - @firebase/firestore-compat@0.3.9
+  - @firebase/auth-compat@0.4.2
+
 ## 9.21.0
 
 ### Minor Changes
