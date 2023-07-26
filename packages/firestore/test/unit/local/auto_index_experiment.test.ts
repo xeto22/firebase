@@ -15,10 +15,59 @@
  * limitations under the License.
  */
 
+import { testIndexedDbPersistence } from './persistence_test_helpers';
+import { User } from '../../../src/auth/user';
+import { QueryEngine } from '../../../src/local/query_engine';
+import {LocalDocumentsView} from "../../../src/local/local_documents_view";
+import {
+  PersistenceTransaction
+} from "../../../src/local/persistence_transaction";
+import {Query} from "../../../src/core/query";
+import {IndexOffset} from "../../../src/model/field_index";
+import {PersistencePromise} from "../../../src/local/persistence_promise";
+import {DocumentMap} from "../../../src/model/collections";
+import {Persistence} from "../../../src/local/persistence";
+
 // This code is ported from
 // https://github.com/firebase/firebase-android-sdk/pull/5064
 describe('AutoIndexExperiment', async () => {
-  beforeEach(() => {});
+  let capturedIndexOffsets: IndexOffset[] = [];
 
-  it.only('combines indexed with non indexed results', async () => {});
+  class AutoIndexExperimentLocalDocumentsView extends LocalDocumentsView {
+    getDocumentsMatchingQuery(
+      transaction: PersistenceTransaction,
+      query: Query,
+      offset: IndexOffset
+    ): PersistencePromise<DocumentMap> {
+      capturedIndexOffsets.push(offset);
+      return super.getDocumentsMatchingQuery(transaction, query, offset);
+    }
+  }
+
+  let persistence: Persistence;
+
+  beforeEach(async () => {
+    capturedIndexOffsets = [];
+
+    persistence = await testIndexedDbPersistence();
+
+    const indexManager = persistence.getIndexManager(User.UNAUTHENTICATED);
+    const mutationQueue = persistence.getMutationQueue(
+      User.UNAUTHENTICATED,
+      indexManager
+    );
+    const documentOverlayCache = persistence.getDocumentOverlayCache(
+      User.UNAUTHENTICATED
+    );
+    const remoteDocumentCache = persistence.getRemoteDocumentCache();
+    const queryEngine = new QueryEngine();
+
+    remoteDocumentCache.setIndexManager(indexManager);
+
+    const localDocuments = new AutoIndexExperimentLocalDocumentsView(remoteDocumentCache, mutationQueue, documentOverlayCache, indexManager);
+
+    queryEngine.initialize(localDocuments, indexManager);
+  });
+
+  it('combines indexed with non indexed results', async () => {});
 });
