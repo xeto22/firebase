@@ -40,7 +40,11 @@ import { UserCredentialImpl } from '../user/user_credential_impl';
 import { PasskeyAuthProvider } from '../providers/passkey';
 import { signInAnonymously } from './anonymous';
 
-export async function signInWithPasskey(auth: Auth): Promise<UserCredential> {
+export async function signInWithPasskey(
+  auth: Auth,
+  name: string,
+  autoSignUp: boolean = true
+): Promise<UserCredential> {
   console.log('!!!!! signInWithPasskey');
   const authInternal = _castAuth(auth);
   const encoder = new TextEncoder();
@@ -55,17 +59,9 @@ export async function signInWithPasskey(auth: Auth): Promise<UserCredential> {
     credentialRequestOptions: {
       challenge: encoder.encode('fake-challenge').buffer,
       rpId: 'localhost',
-      userVerification: 'required',
-      allowCredentials: [
-        {
-          publicKey: {
-            name: 'johndoe@example.com'
-          }
-        }
-      ]
+      userVerification: 'required'
     }
   };
-;
   // Get crendentials
   await PasskeyAuthProvider.getCredential(
     startSignInResponse.credentialRequestOptions
@@ -105,7 +101,7 @@ export async function signInWithPasskey(auth: Auth): Promise<UserCredential> {
       signInAnonymously(authInternal)
         .then(async userCredential => {
           await auth.updateCurrentUser(userCredential.user);
-          await linkWithPasskey(auth.currentUser!);
+          await enrollPasskey(auth.currentUser!);
         })
         .catch(err => {
           console.log(err);
@@ -122,8 +118,8 @@ export async function signInWithPasskey(auth: Auth): Promise<UserCredential> {
  *
  * @public
  */
-export async function linkWithPasskey(user: User): Promise<UserCredential> {
-  console.log('!!!!! linkWithPasskey');
+export async function enrollPasskey(user: User): Promise<UserCredential> {
+  console.log('!!!!! enrollPasskey');
   const userInternal = getModularInstance(user) as UserInternal;
   const encoder = new TextEncoder();
 
@@ -195,5 +191,5 @@ export async function linkWithPasskey(user: User): Promise<UserCredential> {
       console.log(err);
     });
 
-  return Promise.reject(new Error('linkWithPasskey Not implemented'));
+  return Promise.reject(new Error('enrollPasskey Not implemented'));
 }

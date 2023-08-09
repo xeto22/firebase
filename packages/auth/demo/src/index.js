@@ -526,10 +526,11 @@ function onSignInWithPasskey() {
   console.log(passkeyUsername);
 
   signInWithPasskey(auth, passkeyUsername).then(onAuthSuccess, onAuthError);
+  // enrollPasskey(user, passkeyUsername).then(onAuthSuccess, onAuthError);
 }
 
-function onLinkWithPasskey() {
-  linkWithPasskey(activeUser()).then(onAuthUserCredentialSuccess, onAuthError);
+function onEnrollPasskey() {
+  enrollPasskey(activeUser()).then(onAuthUserCredentialSuccess, onAuthError);
 }
 
 /**
@@ -2234,7 +2235,6 @@ function initApp() {
   $('#password-reset-password').blur(() => onBlurPassword('#password-reset-'));
 
   $('#sign-in-with-passkey').click(onSignInWithPasskey);
-  $('#clear-all-passkeys').click(onClearAllPasskeys);
   
   $('#sign-in-with-generic-idp-credential').click(
     onSignInWithGenericIdPCredential
@@ -2270,7 +2270,7 @@ function initApp() {
   $('#confirm-password-reset').click(onConfirmPasswordReset);
 
   $('#get-provider-data').click(onGetProviderData);
-  $('#link-with-passkey').click(onLinkWithPasskey);
+  $('#enroll-passkey').click(onEnrollPasskey);
   $('#link-with-email-and-password').click(onLinkWithEmailAndPassword);
   $('#link-with-generic-idp-credential').click(onLinkWithGenericIdPCredential);
   $('#unlink-provider').click(onUnlinkProvider);
